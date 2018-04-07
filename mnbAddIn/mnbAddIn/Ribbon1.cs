@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Office.Tools.Ribbon;
+using mnbService;
 
 namespace mnbAddIn
 {
@@ -15,7 +16,7 @@ namespace mnbAddIn
 
         private void button1_Click(object sender, RibbonControlEventArgs e)
         {
-            
+            Service serv = new Service();
         }
     }
 }
