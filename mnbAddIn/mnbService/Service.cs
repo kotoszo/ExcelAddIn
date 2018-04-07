@@ -9,10 +9,20 @@ namespace mnbService
 {
     public class Service
     {
-        public Service()
+        MNBArfolyamServiceSoapClient client;
+        private int startYear, startMonth, startDay;
+        private int endYear, endMonth, endDay;
+        string chosenCurrency;
+
+        public Service(int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay)
         {
-            MNBArfolyamServiceSoapClient client = new MNBArfolyamServiceSoapClient();
-            client.Close();
+            chosenCurrency = "HUF";
+            client = new MNBArfolyamServiceSoapClient();
+
+            this.startYear = startYear; this.startMonth = startMonth; this.startDay = startDay;
+            this.endYear = endYear; this.endMonth = endMonth; this.endDay = endDay;
+
+            // client.Close();  ///////////////////////////////////////////////////////////////////////////////////////////////////
         }
     }
 }
