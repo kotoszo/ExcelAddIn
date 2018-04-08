@@ -2,6 +2,7 @@
 using System.Data.OleDb;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using dbLogger.db;
 
 namespace dbLogger
 {
@@ -29,7 +30,7 @@ namespace dbLogger
             if (connection == null)
             {
                 string connectionString = 
-                    @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\\Db.accdb;Persist Security Info=False;";
+                    @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source="+Handler.path+";Persist Security Info=False;";
                 connection = new OleDbConnection
                 {
                     ConnectionString = connectionString

@@ -3,12 +3,13 @@ using System.IO;
 using System.Linq;
 using System.Data.OleDb;
 using System.Reflection;
+using System;
 
 namespace dbLogger.db
 {
     internal static class Handler
     {
-        private static string path;
+        public static string path;
         private static OleDbConnection connection;
         private static OleDbCommand command;
 
@@ -19,7 +20,6 @@ namespace dbLogger.db
             string createStr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + path;
             cat.Create(createStr);
             cat = null;
-            
         }
         internal static void DbColumnMaker(OleDbCommand oleDbCommand)
         {
@@ -48,7 +48,7 @@ namespace dbLogger.db
             }
         }
         /// <summary>
-        /// Originally, the dbFullPath contains this: file:\\C:...etc, for some reason, so i had to remove it.
+        /// The dbFullPath contains this: 'file:\\C:...' etc for some reason, so i had to remove it.
         /// </summary>
         /// <returns></returns>
         private static string NormalizePath()
