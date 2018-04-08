@@ -1,4 +1,6 @@
-﻿using mnbService;
+﻿using popup;
+using dbLogger;
+using mnbService;
 using System.Data;
 using System.Collections.Generic;
 using Microsoft.Office.Tools.Ribbon;
@@ -8,10 +10,21 @@ namespace mnbAddIn
 {
     public partial class Ribbon1
     {
+        private Logger _logger;
+        private Logger Logger {
+            get
+            {
+                if (_logger == null) { _logger = new Logger(); }
+                return _logger;
+            }
+            set { Logger = value; }
+        }
         private void Ribbon1_Load(object sender, RibbonUIEventArgs e) { }
 
         private void button1_Click(object sender, RibbonControlEventArgs e)
         {
+
+            Logger.SaveNewLog();
             DataSet dataSet = GetDataSet();
             var currencyTable = dataSet.Tables["Currencies"];
             var dateTable = dataSet.Tables["Dates"];
@@ -71,6 +84,17 @@ namespace mnbAddIn
                 dataSet.Tables.Add(valueTable);
             };
             return dataSet;
+        }
+
+        private void button2_Click(object sender, RibbonControlEventArgs e)
+        {
+            Dictionary<Columns, string> logged = Logger.Select(Columns.logTime);
+            PopUp popUP = new PopUp(logged[Columns.userName], logged[Columns.logTime], logged[Columns.reason]);
+            if (popUP.IsChanged)
+            {
+                logged[Columns.reason] = popUP.NewReason;
+                Logger.Update(Columns.reason, logged);
+            }
         }
     }
 }
