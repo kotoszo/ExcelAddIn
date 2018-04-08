@@ -1,22 +1,22 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Data.OleDb;
-using System.Reflection;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
 namespace dbLogger
 {
-    public enum Columns { userName, logTime, reason }
+    public enum Columns { logId, userName, logTime, reason }
     public class Logger : IDisposable
     {
         private OleDbConnection connection;
-        //private string dbFullPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase) + "\\db\\Db.accdb";
-        private string dbFullPath = @"Data Source =|DataDirectory|\db\Db.accdb";
         private string lastTimeStamp;
         public Logger()
         {
+            if (!db.Handler.IsDbAlive())
+            {
+                db.Handler.DbMaker(GetConnection());
+                db.Handler.DbColumnMaker(GetCommand(""));
+            }
             connection = GetConnection();
         }
 
@@ -24,34 +24,18 @@ namespace dbLogger
         {
             connection.Close();
         }
-
-        private void NormalizePath()
-        {
-            var text = dbFullPath.Skip(6);
-            string newPath = "";
-            foreach (char item in text)
-            {
-                newPath += item;
-            }
-            dbFullPath = newPath;
-        }
         private OleDbConnection GetConnection()
         {
             if (connection == null)
             {
-                NormalizePath();
                 string connectionString = 
-                    @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\db\Db.accdb;Persist Security Info=False;";
+                    @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\\Db.accdb;Persist Security Info=False;";
                 connection = new OleDbConnection
                 {
                     ConnectionString = connectionString
                 };
             }
             return connection;
-        }
-        public void GetLog()
-        {
-            
         }
         public Dictionary<Columns, string> Select(Columns columnName)
         {
@@ -67,14 +51,18 @@ namespace dbLogger
                     OleDbDataReader result = command.ExecuteReader();
                     while (result.Read())
                     {
-                        res.Add(Columns.userName, result.GetString(0));
-                        res.Add(Columns.logTime, result.GetString(1));
-                        string reason = "";
-                        if(!result.IsDBNull(2))
+                        if (!result.IsDBNull(0))
                         {
-                            reason = result.GetString(2);
+                            res.Add(Columns.logId, result.GetInt32(0).ToString());
+                            res.Add(Columns.userName, result.GetString(1));
+                            res.Add(Columns.logTime, result.GetString(2));
+                            string reason = "";
+                            if(!result.IsDBNull(3))
+                            {
+                                reason = result.GetString(3);
+                            }
+                            res.Add(Columns.reason, reason);
                         }
-                        res.Add(Columns.reason, reason);
                     }
                 }
                 catch (OleDbException e)
@@ -118,13 +106,13 @@ namespace dbLogger
 
         public void Update(Columns columnName, Dictionary<Columns, string> logged)
         {
-            string query = string.Format("UPDATE logDb SET {0} = ? WHERE logTime = ?", columnName);
+            string query = string.Format("UPDATE logDb SET {0} = ? WHERE logID = ?", columnName);
             OleDbCommand command = GetCommand(query);
             command.Connection.Open();
             if(command.Connection.State == System.Data.ConnectionState.Open)
             {
                 command.Parameters.Add("?", OleDbType.VarWChar).Value = logged[columnName];
-                command.Parameters.Add("?", OleDbType.VarWChar).Value = logged[Columns.logTime];
+                command.Parameters.Add("?", OleDbType.VarWChar).Value = logged[Columns.logId];
                 try
                 {
                     command.ExecuteNonQuery();
@@ -139,7 +127,6 @@ namespace dbLogger
                 }
             }
         }
-
         private OleDbCommand GetCommand(string query)
         {
             return new OleDbCommand()

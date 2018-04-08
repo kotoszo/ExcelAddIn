@@ -59,13 +59,13 @@
             // 
             this.button1.Label = "MNB adatletöltés";
             this.button1.Name = "button1";
-            this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
+            this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.mnbDownloadClick);
             // 
             // button2
             // 
             this.button2.Label = "Log";
             this.button2.Name = "button2";
-            this.button2.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button2_Click);
+            this.button2.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.logButtonClick);
             // 
             // Ribbon1
             // 

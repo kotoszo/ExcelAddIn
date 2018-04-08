@@ -10,6 +10,8 @@ namespace mnbAddIn
 {
     public partial class Ribbon1
     {
+        string[] header;
+        string[] currKeys;
         private Logger _logger;
         private Logger Logger {
             get
@@ -19,32 +21,23 @@ namespace mnbAddIn
             }
             set { Logger = value; }
         }
-        private void Ribbon1_Load(object sender, RibbonUIEventArgs e) { }
-
-        private void button1_Click(object sender, RibbonControlEventArgs e)
+        private void Ribbon1_Load(object sender, RibbonUIEventArgs e)
         {
+            header = new string[] { "Dátum/ISO", "Egység" };
+            currKeys = new string[] { "name", "rate" };
+        }
 
+        private void mnbDownloadClick(object sender, RibbonControlEventArgs e)
+        {
             Logger.SaveNewLog();
             DataSet dataSet = GetDataSet();
-            var currencyTable = dataSet.Tables["Currencies"];
-            var dateTable = dataSet.Tables["Dates"];
-            var valueTable = dataSet.Tables["Values"];
             Window window = e.Control.Context;
             Worksheet activeWorksheet = ((Worksheet)window.Application.ActiveSheet);
 
-            int currentRow = 1, currentColumn = 1;
-            Printer(currentRow, currentColumn, "Dátum/ISO", activeWorksheet, false);
-            currentRow++;
-            Printer(currentRow, currentColumn, "Egység", activeWorksheet, false);
-            currentRow++;
-            foreach (DataRow item in dateTable.Rows)
-            {
-                Printer(currentRow, currentColumn, item["date"].ToString(), activeWorksheet, true);
-                currentRow++;
-            }
+            int currentColumn = 1;
+            PrintHeaderAndDates(out int currentRow, currentColumn, activeWorksheet, dataSet.Tables["Dates"]);
             currentColumn = 2;
-            string[] currKeys = new string[] { "name", "rate" };
-            foreach (DataRow item in currencyTable.Rows)
+            foreach (DataRow item in dataSet.Tables["Currencies"].Rows)
             {
                 currentRow = 1;
                 for (int i = 0; i < currKeys.Length; i++)
@@ -53,13 +46,28 @@ namespace mnbAddIn
                     currentRow++;
                 }
                 string expression = "currencyId = '" + item["id"] + "'";
-                var values = valueTable.Select(expression);
+                var values = dataSet.Tables["Values"].Select(expression);
                 foreach (var value in values)
                 {
                     Printer(currentRow, currentColumn, value["value"].ToString(), activeWorksheet, false);
                     currentRow++;
                 }
                 currentColumn++;
+            }
+        }
+        private void PrintHeaderAndDates(out int currentRow, 
+            int currentColumn, Worksheet activeWorksheet, System.Data.DataTable table)
+        {
+            currentRow = 1;
+            foreach (var item in header)
+            {
+                Printer(currentRow, currentColumn, item, activeWorksheet, false);
+                currentRow++;
+            }
+            foreach (DataRow item in table.Rows)
+            {
+                Printer(currentRow, currentColumn, item["date"].ToString(), activeWorksheet, true);
+                currentRow++;
             }
         }
         private void Printer(int row, int column, string item, Worksheet sheet, bool isDate)
@@ -86,7 +94,7 @@ namespace mnbAddIn
             return dataSet;
         }
 
-        private void button2_Click(object sender, RibbonControlEventArgs e)
+        private void logButtonClick(object sender, RibbonControlEventArgs e)
         {
             Dictionary<Columns, string> logged = Logger.Select(Columns.logTime);
             PopUp popUP = new PopUp(logged[Columns.userName], logged[Columns.logTime], logged[Columns.reason]);
