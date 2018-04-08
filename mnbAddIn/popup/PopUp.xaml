@@ -53,8 +53,5 @@
         <Button Name="SaveButton" Content="Save" HorizontalAlignment="Center" 
                 VerticalAlignment="Center" FontSize="16" Background="White" 
                 Grid.Column="3" Grid.Row="4" Click="SaveButtonClick"/>
-        <ListBox Name="listBox"
-            Grid.Column="0" Grid.Row="0" VerticalAlignment="Stretch"
-                 />
     </Grid>
 </Window>
