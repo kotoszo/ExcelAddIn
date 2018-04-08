@@ -30,13 +30,15 @@ namespace mnbAddIn
                 currentRow++;
             }
             currentColumn = 2;
+            string[] currKeys = new string[] { "name", "rate" };
             foreach (DataRow item in currencyTable.Rows)
             {
                 currentRow = 1;
-                Printer(currentRow, currentColumn, item["name"].ToString(), activeWorksheet, false);
-                currentRow++;
-                Printer(currentRow, currentColumn, item["rate"].ToString(), activeWorksheet, false);
-                currentRow++;
+                for (int i = 0; i < currKeys.Length; i++)
+                {
+                    Printer(currentRow, currentColumn, item[currKeys[i]].ToString(), activeWorksheet, false);
+                    currentRow++;
+                }
                 string expression = "currencyId = '" + item["id"] + "'";
                 var values = valueTable.Select(expression);
                 foreach (var value in values)
@@ -46,7 +48,6 @@ namespace mnbAddIn
                 }
                 currentColumn++;
             }
-            
         }
         private void Printer(int row, int column, string item, Worksheet sheet, bool isDate)
         {

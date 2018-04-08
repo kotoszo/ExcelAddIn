@@ -29,13 +29,6 @@ namespace mnbService
             }
             return builder.ToString();
         }
-        public static DataRow ValueRow(DataRow row, object currId, object dateId, object value)
-        {
-            row["currencyId"] = currId;
-            row["dateId"] = dateId;
-            row["value"] = value;
-            return row;
-        }
 
         public static DataTable MakeTable(string name)
         {
@@ -77,6 +70,13 @@ namespace mnbService
         {
             row["id"] = id;
             row["date"] = date;
+            return row;
+        }
+        public static DataRow ValueRow(DataRow row, object currId, object dateId, object value)
+        {
+            row["currencyId"] = currId;
+            row["dateId"] = dateId;
+            row["value"] = value;
             return row;
         }
         internal static GetExchangeRatesRequestBody ExchangeBody(string currency, string startDate, string endDate)
