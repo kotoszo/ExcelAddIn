@@ -15,6 +15,7 @@ namespace popup
             UserBox.Text = userName;
             DateBox.Text = timeStamp;
             ReasonBox.Text = currentReason;
+            NewReason = currentReason;
             Closing += PopUp_Closing;
             ShowDialog();
         }

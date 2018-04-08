@@ -12,7 +12,8 @@ namespace dbLogger
     public class Logger : IDisposable
     {
         private OleDbConnection connection;
-        private string dbFullPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase) + "\\db\\Db.accdb";
+        //private string dbFullPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase) + "\\db\\Db.accdb";
+        private string dbFullPath = @"Data Source =|DataDirectory|\db\Db.accdb";
         private string lastTimeStamp;
         public Logger()
         {
@@ -39,8 +40,8 @@ namespace dbLogger
             if (connection == null)
             {
                 NormalizePath();
-                string connectionString = string.Format(
-                    "Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Persist Security Info=False;", dbFullPath);
+                string connectionString = 
+                    @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\db\Db.accdb;Persist Security Info=False;";
                 connection = new OleDbConnection
                 {
                     ConnectionString = connectionString
