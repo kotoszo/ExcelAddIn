@@ -199,6 +199,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\dbLogger\dbLogger.csproj">
+      <Project>{a150b59f-13b6-4f52-93e9-a3f61aa46b46}</Project>
+      <Name>dbLogger</Name>
+    </ProjectReference>
     <ProjectReference Include="..\mnbService\mnbService.csproj">
       <Project>{d707e0af-5d42-4201-baa7-3cdee64bccdb}</Project>
       <Name>mnbService</Name>

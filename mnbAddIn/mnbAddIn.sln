@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mnbAddIn", "mnbAddIn\mnbAdd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mnbService", "mnbService\mnbService.csproj", "{D707E0AF-5D42-4201-BAA7-3CDEE64BCCDB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dbLogger", "dbLogger\dbLogger.csproj", "{A150B59F-13B6-4F52-93E9-A3F61AA46B46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "popup", "popup\popup.csproj", "{033BE38B-4A84-4BE7-9BCF-52F3CEBF0E3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{D707E0AF-5D42-4201-BAA7-3CDEE64BCCDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D707E0AF-5D42-4201-BAA7-3CDEE64BCCDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D707E0AF-5D42-4201-BAA7-3CDEE64BCCDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A150B59F-13B6-4F52-93E9-A3F61AA46B46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A150B59F-13B6-4F52-93E9-A3F61AA46B46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A150B59F-13B6-4F52-93E9-A3F61AA46B46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A150B59F-13B6-4F52-93E9-A3F61AA46B46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{033BE38B-4A84-4BE7-9BCF-52F3CEBF0E3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{033BE38B-4A84-4BE7-9BCF-52F3CEBF0E3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{033BE38B-4A84-4BE7-9BCF-52F3CEBF0E3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{033BE38B-4A84-4BE7-9BCF-52F3CEBF0E3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
