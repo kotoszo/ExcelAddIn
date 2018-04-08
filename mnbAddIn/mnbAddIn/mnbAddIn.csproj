@@ -203,6 +203,10 @@
       <Project>{d707e0af-5d42-4201-baa7-3cdee64bccdb}</Project>
       <Name>mnbService</Name>
     </ProjectReference>
+    <ProjectReference Include="..\popup\popup.csproj">
+      <Project>{033be38b-4a84-4be7-9bcf-52f3cebf0e3a}</Project>
+      <Name>popup</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
