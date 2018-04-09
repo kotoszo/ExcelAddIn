@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Data;
+using dbLogger.db;
 using System.Data.OleDb;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using dbLogger.db;
 
 namespace dbLogger
 {
@@ -13,10 +14,10 @@ namespace dbLogger
         private string lastTimeStamp;
         public Logger()
         {
-            if (!db.Handler.IsDbAlive())
+            if (!Handler.IsDbAlive())
             {
-                db.Handler.DbMaker(GetConnection());
-                db.Handler.DbColumnMaker(GetCommand(""));
+                Handler.DbMaker(GetConnection());
+                Handler.DbColumnMaker(GetCommand(""));  // TODO fix it.
             }
             connection = GetConnection();
         }
@@ -38,45 +39,47 @@ namespace dbLogger
             }
             return connection;
         }
-        public Dictionary<Columns, string> Select(Columns columnName)
+        public DataTable AllSelect()
+        {
+            var dataTable = new DataTable();
+            string query = "SELECT * FROM logDb";
+            OleDbCommand command = GetCommand(query);
+            command.Connection.Open();
+            if (command.Connection.State == ConnectionState.Open)
+            {
+                return ExecuteSelect(command);
+            }
+            return null;
+        }
+        public DataTable SingleSelect(Columns columnName)
         {
             string query = string.Format("SELECT * FROM logDb WHERE {0} = ?", columnName);
             OleDbCommand command = GetCommand(query);
             command.Connection.Open();
-            if(command.Connection.State == System.Data.ConnectionState.Open)
+            if(command.Connection.State == ConnectionState.Open)
             {
                 command.Parameters.Add("?", OleDbType.VarChar).Value = lastTimeStamp;
-                Dictionary<Columns, string> res = new Dictionary<Columns, string>();
-                try
-                {
-                    OleDbDataReader result = command.ExecuteReader();
-                    while (result.Read())
-                    {
-                        if (!result.IsDBNull(0))
-                        {
-                            res.Add(Columns.logId, result.GetInt32(0).ToString());
-                            res.Add(Columns.userName, result.GetString(1));
-                            res.Add(Columns.logTime, result.GetString(2));
-                            string reason = "";
-                            if(!result.IsDBNull(3))
-                            {
-                                reason = result.GetString(3);
-                            }
-                            res.Add(Columns.reason, reason);
-                        }
-                    }
-                }
-                catch (OleDbException e)
-                {
-                    MessageBox.Show(e.Message);
-                }
-                finally
-                {
-                    command.Connection.Close();
-                }
-                return res;
+                return ExecuteSelect(command);
             }
             return null;
+        }
+        private DataTable ExecuteSelect(OleDbCommand command)
+        {
+            DataTable dataTable = new DataTable();
+            try
+            {
+                OleDbDataReader reader = command.ExecuteReader();
+                dataTable.Load(reader);
+            }
+            catch (OleDbException e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            finally
+            {
+                command.Connection.Close();
+            }
+            return dataTable;
         }
         public void SaveNewLog()
         {
@@ -86,22 +89,11 @@ namespace dbLogger
             string query = "INSERT INTO logDb (userName, logTime) VALUES(?, ?)";
             OleDbCommand command = GetCommand(query);
             command.Connection.Open();
-            if(connection.State == System.Data.ConnectionState.Open)
+            if(connection.State == ConnectionState.Open)
             {
                 command.Parameters.Add("?", OleDbType.VarWChar).Value = userName;
                 command.Parameters.Add("?", OleDbType.VarWChar).Value = timeStamp;
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch (OleDbException e)
-                {
-                    MessageBox.Show(e.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
+                ExecuteCommand(command);
             }
         }
 
@@ -110,22 +102,51 @@ namespace dbLogger
             string query = string.Format("UPDATE logDb SET {0} = ? WHERE logID = ?", columnName);
             OleDbCommand command = GetCommand(query);
             command.Connection.Open();
-            if(command.Connection.State == System.Data.ConnectionState.Open)
+            if(command.Connection.State == ConnectionState.Open)
             {
                 command.Parameters.Add("?", OleDbType.VarWChar).Value = logged[columnName];
                 command.Parameters.Add("?", OleDbType.VarWChar).Value = logged[Columns.logId];
-                try
+                ExecuteCommand(command);
+            }
+        }
+
+        public void Update(DataTable dTable, Columns columnName, HashSet<string> idsToUpdate)
+        {
+            List<DataRow> tempList = new List<DataRow>();
+            foreach (DataRow item in dTable.Rows)
+            {
+                if (idsToUpdate.Contains(item["logId"].ToString()))
                 {
-                    command.ExecuteNonQuery();
+                    tempList.Add(item);
                 }
-                catch (OleDbException e)
+            }
+            foreach (var row in tempList)
+            {
+                string query = string.Format("UPDATE logDb SET {0} = ? WHERE logID = ?", columnName);
+                OleDbCommand command = GetCommand(query);
+                command.Connection.Open();
+                if (command.Connection.State == ConnectionState.Open)
                 {
-                    MessageBox.Show(e.Message);
+                    command.Parameters.Add("?", OleDbType.VarWChar).Value = row["reason"];
+                    command.Parameters.Add("?", OleDbType.VarWChar).Value = row["logId"];
+                    ExecuteCommand(command);
                 }
-                finally
-                {
-                    command.Connection.Close();
-                }
+            }
+        }
+
+        private void ExecuteCommand(OleDbCommand command)
+        {
+            try
+            {
+                command.ExecuteNonQuery();
+            }
+            catch (OleDbException e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            finally
+            {
+                command.Connection.Close();
             }
         }
         private OleDbCommand GetCommand(string query)

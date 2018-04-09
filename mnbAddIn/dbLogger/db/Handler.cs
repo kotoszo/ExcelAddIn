@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Data.OleDb;
 using System.Reflection;
-using System;
 
 namespace dbLogger.db
 {
@@ -51,7 +50,7 @@ namespace dbLogger.db
         /// The dbFullPath contains this: 'file:\\C:...' etc for some reason, so i had to remove it.
         /// </summary>
         /// <returns></returns>
-        private static string NormalizePath()
+        private static string NormalizedPath()
         {
             string dbFullPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase) + "\\Db.accdb";
             var text = dbFullPath.Skip(6);
@@ -64,7 +63,7 @@ namespace dbLogger.db
         }
         internal static bool IsDbAlive()
         {
-            path = NormalizePath();
+            path = NormalizedPath();
             return File.Exists(path);
         }
     }
