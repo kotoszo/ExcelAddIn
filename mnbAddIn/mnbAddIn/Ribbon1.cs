@@ -96,12 +96,10 @@ namespace mnbAddIn
 
         private void logButtonClick(object sender, RibbonControlEventArgs e)
         {
-            Dictionary<Columns, string> logged = Logger.Select(Columns.logTime);
-            PopUp popUP = new PopUp(logged[Columns.userName], logged[Columns.logTime], logged[Columns.reason]);
-            if (popUP.IsChanged)
+            PopUp popUP = new PopUp(Logger.AllSelect());
+            if (popUP.IsSaved)
             {
-                logged[Columns.reason] = popUP.NewReason;
-                Logger.Update(Columns.reason, logged);
+                Logger.Update(popUP.DTable, Columns.reason, popUP.IdsToUpdate);
             }
         }
     }
