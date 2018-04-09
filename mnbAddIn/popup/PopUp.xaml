@@ -6,22 +6,6 @@
         xmlns:local="clr-namespace:popup"
         mc:Ignorable="d"
         Title="PopUp" Height="300" Width="600">
-    <Window.Resources>
-        <Style TargetType="Label">
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Grid.Column" Value="0"/>
-        </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Grid.Column" Value="1"/>
-            <Setter Property="TextAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="BorderBrush" Value="White"/>
-        </Style>
-    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -37,21 +21,21 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <Label Content="User name" Grid.Row="1"/>
-        <Label Content="Date" Grid.Row="2"/>
-        <Label Content="Reason" Grid.Row="3"/>
-
-        <TextBox Name="UserBox" Grid.Row="1" IsEnabled="False"/>
-        <TextBox Name="DateBox" Grid.Row="2" IsEnabled="False"/>
-        <TextBox Name="ReasonBox" Grid.Row="3" Grid.Column="1" 
-                   Grid.ColumnSpan="2" Grid.RowSpan="2" FontSize="16" 
-                 VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
-                 TextAlignment="Left" FlowDirection="LeftToRight" TextWrapping="Wrap"
-                AcceptsReturn="True" MaxLength="255" BorderBrush="Black" BorderThickness=".3"/>
-
+        
         <Button Name="SaveButton" Content="Save" HorizontalAlignment="Center" 
                 VerticalAlignment="Center" FontSize="16" Background="White" 
-                Grid.Column="3" Grid.Row="4" Click="SaveButtonClick"/>
+                Grid.Column="3" Grid.Row="5" Click="SaveButtonClick"/>
+        
+        <DataGrid Name="dataGrid" Grid.ColumnSpan="4" Grid.RowSpan="5" ItemsSource="{Binding}">
+            <DataGrid.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock>
+                        <Label Content="{Binding Path=userName}"/>
+                        <Label Content="{Binding Path=logTime}"/>
+                        <TextBlock Text="{Binding Path=reason}"/>
+                    </TextBlock>
+                </DataTemplate>
+            </DataGrid.ItemTemplate>
+        </DataGrid>
     </Grid>
 </Window>
